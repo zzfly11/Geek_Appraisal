@@ -64,7 +64,7 @@ int main()
         int length = 0;
         if(huffman[i][1] == -1 && huffman[i][2] == -1)  //判断节点是叶结点 
         {
-            length = findParent(i,huffman,count);   //得到各个叶结点的带权路径长度
+            length = huffman[i][3]*findParent(i,huffman,count);   //得到各个叶结点的带权路径长度
             sum += length; 	//各个叶结点带权路径长度累加得到总长度WPL
         }
     }
@@ -136,13 +136,13 @@ void findMin(int ii[],int huffman[][4],int n)
     //找出第二个权重最小的结点（模仿上部分自行编写）
     
     int min2 = 9999999;
-    for(int i = 0;i != ii[0] && i < 2 * n - 1; i++)
+    for(int i = 0; i < 2 * n - 1; i++)
     {
         if(huffman[i][3] == -1 && huffman[i][0] == -1)  //判断此结点是中间结点  
         {
             break;
         }
-        if(huffman[i][3] < min2 && huffman[i][0] == -1)  //判断此结点是叶结点
+        if(huffman[i][3] < min2 && huffman[i][0] == -1 && i != ii[0])  //判断此结点是叶结点
         {
             min2 = huffman[i][3];
             ii[1] = i;
@@ -155,7 +155,7 @@ void findMin(int ii[],int huffman[][4],int n)
 int findParent(int i,int huffman[][4],int n)
 {
     int length = 0;
-    if(huffman[i][0] == -1)     //判断结点是叶结点 
+    if(huffman[i][0] == -1)     //判断结点是根结点 
     {
         return 0;
     }
@@ -175,14 +175,14 @@ void HuffmanCode(int i,int huffman[][4],int n)
     while(father != -1)
     {
         if(current == huffman[father][1]){	//判断当前结点的父结点左子树是否为当前结点
-        code[start]=0;		//子结点是父结点的左子树，编码为0
+        code[start] = '0';		//子结点是父结点的左子树，编码为0
     }
-	    else {
- 	    code[start]=1;		//子结点是父结点的右子树，编码为1
+	    if(current == huffman[father][2]){
+ 	    code[start] = '1';		//子结点是父结点的右子树，编码为1
     }
         current = father;		//往上朔源，更新当前结点
         father = huffman[father][0];		//同理（当前结点更新后），更新当前结点的父亲结点
-        start++;		//更新编码位置
+        start += 1;		//更新编码位置
     }
     code[start]='\0';   //编码结束符
     
